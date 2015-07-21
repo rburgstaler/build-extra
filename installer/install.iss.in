@@ -14,6 +14,13 @@
 #define APP_BUILTINS  'share\git\builtins.txt'
 #define APP_BINDIMAGE 'share\git\bindimage.txt'
 
+#if GetEnv('ROOTDIR') != "" 
+  #define ROOTDIR GetEnv('ROOTDIR')
+#else
+  #define ROOTDIR "..\..\..\.."
+#endif
+#define SCRIPTDIR SourcePath
+
 #define PLINK_PATH_ERROR_MSG 'Please enter a valid path to a Plink executable.'
 
 #define DROP_HANDLER_GUID '{{60254CA5-953B-11CF-8C96-00AA00B8708C}'
@@ -25,7 +32,7 @@ LZMAUseSeparateProcess=yes
 OutputBaseFilename={#APP_NAME+'-'+APP_VERSION}-{#BITNESS}-bit
 OutputDir={#GetEnv('USERPROFILE')}
 SolidCompression=yes
-SourceDir={#GetEnv('ROOTDIR')}
+SourceDir={#ROOTDIR}
 #ifdef IS64
 ArchitecturesInstallIn64BitMode=x64
 #endif
@@ -44,7 +51,7 @@ DisableDirPage=auto
 DefaultGroupName={#APP_NAME}
 DisableProgramGroupPage=auto
 DisableReadyPage=yes
-InfoBeforeFile={#GetEnv('SCRIPTDIR')}\gpl-2.0.rtf
+InfoBeforeFile={#SCRIPTDIR}\gpl-2.0.rtf
 PrivilegesRequired=none
 UninstallDisplayIcon={app}\{#MINGW_BITNESS}\share\git\git-for-windows.ico
 #ifndef COMPILE_FROM_IDE
@@ -56,18 +63,18 @@ VersionInfoVersion={#APP_VERSION}
 #endif
 
 ; Cosmetic
-SetupIconFile={#GetEnv('SCRIPTDIR')}\git.ico
+SetupIconFile={#SCRIPTDIR}\git.ico
 WizardImageBackColor=clWhite
 WizardImageStretch=no
-WizardImageFile={#GetEnv('SCRIPTDIR')}\git.bmp
-WizardSmallImageFile={#GetEnv('SCRIPTDIR')}\gitsmall.bmp
+WizardImageFile={#SCRIPTDIR}\git.bmp
+WizardSmallImageFile={#SCRIPTDIR}\gitsmall.bmp
 
 [Types]
 ; Define a custom type to avoid getting the three default types.
 Name: default; Description: Default installation; Flags: iscustom
 
 [Components]
-Name: icons; Description: Additional icons
+Name: icons; Description: Additional icons 
 Name: icons\quicklaunch; Description: In the Quick Launch
 Name: icons\desktop; Description: On the Desktop
 Name: ext; Description: Windows Explorer integration; Types: default
@@ -80,8 +87,8 @@ Name: consolefont; Description: Use a TrueType font in all console windows
 [Files]
 ; Install files that might be in use during setup under a different name.
 #include "file-list.iss"
-Source: {#GetEnv('SCRIPTDIR')}\ReleaseNotes.html; DestDir: {app}; Flags: isreadme replacesameversion; AfterInstall: DeleteFromVirtualStore
-Source: {#GetEnv('SCRIPTDIR')}\edit-git-bash.dll; Flags: dontcopy
+Source: {#SCRIPTDIR}\ReleaseNotes.html; DestDir: {app}; Flags: isreadme replacesameversion; AfterInstall: DeleteFromVirtualStore
+Source: {#SCRIPTDIR}\edit-git-bash.dll; Flags: dontcopy
 
 [Dirs]
 Name: "{app}\tmp"
@@ -90,6 +97,7 @@ Name: "{app}\tmp"
 Name: {group}\Git GUI; Filename: {app}\cmd\git-gui.exe; Parameters: ""; WorkingDir: %HOMEDRIVE%%HOMEPATH%; IconFilename: {app}\{#MINGW_BITNESS}\share\git\git-for-windows.ico
 Name: {group}\Git Bash; Filename: {app}\git-bash.exe; Parameters: "--cd-to-home"; WorkingDir: %HOMEDRIVE%%HOMEPATH%; IconFilename: {app}\{#MINGW_BITNESS}\share\git\git-for-windows.ico
 Name: {group}\Git CMD; Filename: {app}\git-cmd.exe; Parameters: "--cd-to-home"; WorkingDir: %HOMEDRIVE%%HOMEPATH%; IconFilename: {app}\{#MINGW_BITNESS}\share\git\git-for-windows.ico
+Name: "{group}\{cm:UninstallProgram, {#APP_NAME}}"; Filename: "{uninstallexe}"
 
 [Messages]
 BeveledLabel={#APP_URL}
